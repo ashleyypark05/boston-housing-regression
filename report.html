@@ -1,0 +1,956 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.7.33">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>report</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="report_files/libs/clipboard/clipboard.min.js"></script>
+<script src="report_files/libs/quarto-html/quarto.js" type="module"></script>
+<script src="report_files/libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="report_files/libs/quarto-html/popper.min.js"></script>
+<script src="report_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="report_files/libs/quarto-html/anchor.min.js"></script>
+<link href="report_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="report_files/libs/quarto-html/quarto-syntax-highlighting-ea385d0e468b0dd5ea5bf0780b1290d9.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="report_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="report_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="report_files/libs/bootstrap/bootstrap-af57f59f22ae892315844ee534588481.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="fullcontent quarto-light">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+
+<main class="content" id="quarto-document-content">
+
+
+
+
+<p>title: “Report” author: “Jennifer Lee, Ashley Park, Kevan Wang, Oliver Lublin” format: pdf —</p>
+<section id="introduction-and-data" class="level1">
+<h1>Introduction and Data</h1>
+<p>Housing prices reflect a complex interplay of structural, environmental, and social factors. Understanding which neighborhood attributes are most closely tied to price is essential for urban planners, policymakers, and social scientists who care about affordability and inequality.</p>
+<p>In this report we analyze the classic Boston Housing dataset, originally published in Harrison and Rubinfeld (1978) using data from the U.S. Census Bureau. Our primary research question is:</p>
+<blockquote class="blockquote">
+<p><strong>How effectively can we predict median owner-occupied home values in Boston census tracts using 13 neighborhood-level predictors, and which of these predictors are most influential?</strong></p>
+</blockquote>
+<p>The response variable, <code>MEDV</code>, records median home value in $1000s for each tract. The 13 predictors capture a range of neighborhood features, including crime rates, air quality, accessibility, school characteristics, housing stock, and socioeconomic status. Table below summarizes all variables used in our analysis.</p>
+<div class="cell">
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>Boston Housing Data Dictionary</caption>
+<colgroup>
+<col style="width: 12%">
+<col style="width: 87%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Variable</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">MEDV</td>
+<td style="text-align: left;">Median value of owner-occupied homes (in $1000s)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">CRIM</td>
+<td style="text-align: left;">Per capita crime rate by town</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">ZN</td>
+<td style="text-align: left;">Proportion of residential land zoned for lots over 25,000 sqft</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">INDUS</td>
+<td style="text-align: left;">Proportion of non-retail business acres per town</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">CHAS</td>
+<td style="text-align: left;">Borders Charles River (1=yes)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">NOX</td>
+<td style="text-align: left;">Nitric oxide concentration (parts per 10 million)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">RM</td>
+<td style="text-align: left;">Average number of rooms per dwelling</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">AGE</td>
+<td style="text-align: left;">Proportion of owner-occupied units built prior to 1940</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">DIS</td>
+<td style="text-align: left;">Weighted distances to five Boston employment centers</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">RAD</td>
+<td style="text-align: left;">Index of accessibility to radial highways</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">TAX</td>
+<td style="text-align: left;">Full-value property-tax rate per $10,000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">PTRATIO</td>
+<td style="text-align: left;">Pupil-teacher ratio by town</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">B</td>
+<td style="text-align: left;">1000(Bk - 0.63)^2 where Bk is the proportion of Black residents</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">LSTAT</td>
+<td style="text-align: left;">% lower status population</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<section id="exploratory-data-analysis" class="level2">
+<h2 class="anchored" data-anchor-id="exploratory-data-analysis">Exploratory Data Analysis</h2>
+<p>We begin by examining the marginal distribution of the response variable, median home value (<code>MEDV</code>). The histogram shows a right-skewed distribution with a median around $20,000 and a long upper tail. There is also a visible spike at the maximum recorded value of $50,000. This reflects a censoring artifact: in the original census instrument, the highest response category for home value was “$50,000 or more.” These censored tracts represent genuinely high-value neighborhoods but do not provide exact prices.</p>
+<p>Among predictors, nitric oxide concentration (<code>NOX</code>) is roughly uniform over the range 0.4–0.9 parts per 10 million, indicating substantial variation in air quality across tracts. The weighted distance to five Boston employment centers (<code>DIS</code>) is heavily concentrated between 2.5 and 7.5 miles, with relatively fewer neighborhoods that are very close to or very far from major job hubs. Together, these univariate patterns suggest meaningful heterogeneity in both environmental and locational features that may help explain variation in housing values.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="report_files/figure-html/medv_distribution.png" class="img-fluid figure-img" width="480"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>To understand how individual predictors relate to home values, we next examine several key bivariate patterns.</p>
+<p>First, we compare <code>MEDV</code> across tracts that border the Charles River (<code>CHAS = 1</code>) versus those that do not. The 25th percentile of home values in river-adjacent tracts exceeds the median home value of non-adjacent tracts, and the overall distribution is shifted upward. This suggests a sizable location premium for waterfront or near-waterfront neighborhoods.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="report_files/figure-html/chas_boxplot.png" class="img-fluid figure-img" width="480"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Second, socioeconomic status plays a central role. The figure below shows a strong, nearly linear negative association between the percentage of lower-status residents (<code>LSTAT</code>) and home values. Tracts with very low <code>LSTAT</code> tend to have some of the highest home prices in the dataset, whereas neighborhoods with high <code>LSTAT</code> almost never exhibit high <code>MEDV</code>. This pattern suggests that socioeconomic composition may be one of the most influential determinants of housing demand in Boston.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="report_files/figure-html/lstat_scatter.png" class="img-fluid figure-img" width="480"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Third, school quality, as proxied by pupil–teacher ratio (<code>PTRATIO</code>), also exhibits a clear relationship with housing prices. Neighborhoods with lower <code>PTRATIO</code> tend to have substantially higher home values. This is consistent with the idea that education-related public goods are capitalized into housing markets, with families willing to pay larger premiums for access to better-resourced schools.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="report_files/figure-html/ptratio_scatter.png" class="img-fluid figure-img" width="480"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Motivated by the bivariate patterns, we also explored an interaction between <code>PTRATIO</code> and <code>LSTAT</code>. The interaction plot suggests that the penalty for high <code>PTRATIO</code> is steepest in more advantaged neighborhoods (low <code>LSTAT</code>), while in highly disadvantaged tracts, home values are low regardless of <code>PTRATIO</code>. This motivates formally testing the <code>PTRATIO × LSTAT</code> interaction in our regression model.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="report_files/figure-html/ptratio_lstat_interaction.png" class="img-fluid figure-img" width="480"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="methodology" class="level1">
+<h1>Methodology</h1>
+<p>Our primary modeling tool is multiple linear regression, with median home value (<code>MEDV</code>) as the response and the 13 remaining variables as predictors. A linear model offers two advantages: (1) it provides interpretable coefficients that quantify the marginal effect of each predictor on home values, and (2) our exploratory analyses revealed predominantly linear or smoothly monotone relationships between <code>MEDV</code> and key predictors.</p>
+<p>We first fit a baseline model including all 13 predictors:</p>
+<p><span class="math inline">\(\text{MEDV}_i = \beta_0 + \beta_1 \text{CRIM}_i + \cdots + \beta_{13} \text{LSTAT}_i + \varepsilon_i.\)</span></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>model_base <span class="ot">&lt;-</span> <span class="fu">lm</span>(MEDV <span class="sc">~</span> ., <span class="at">data =</span> boston)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>To assess potential multicollinearity, we computed variance inflation factors (VIFs) for each predictor. All VIF values were well below the conventional threshold of 10, indicating no severe multicollinearity and supporting the use of the full predictor set in the initial model.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>vif_values <span class="ot">&lt;-</span> car<span class="sc">::</span><span class="fu">vif</span>(model_base)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(<span class="fu">as.data.frame</span>(vif_values), <span class="at">col.names =</span> <span class="fu">c</span>(<span class="st">"VIF"</span>), <span class="at">caption =</span> <span class="st">"Variance Inflation Factors for Baseline Model"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>Variance Inflation Factors for Baseline Model</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: right;">VIF</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">CRIM</td>
+<td style="text-align: right;">1.791926</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">ZN</td>
+<td style="text-align: right;">2.299062</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">INDUS</td>
+<td style="text-align: right;">4.004044</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">CHAS</td>
+<td style="text-align: right;">1.074054</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">NOX</td>
+<td style="text-align: right;">4.396809</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">RM</td>
+<td style="text-align: right;">1.934734</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">AGE</td>
+<td style="text-align: right;">3.102346</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">DIS</td>
+<td style="text-align: right;">3.956588</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">RAD</td>
+<td style="text-align: right;">7.491429</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">TAX</td>
+<td style="text-align: right;">9.031525</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">PTRATIO</td>
+<td style="text-align: right;">1.793913</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">B</td>
+<td style="text-align: right;">1.348006</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">LSTAT</td>
+<td style="text-align: right;">2.940409</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>Next, we considered theoretical interaction effects suggested by our EDA. In particular, the relationship between <code>PTRATIO</code> and <code>LSTAT</code>. We therefore fit an expanded model that included the interaction term <code>PTRATIO × LSTAT</code> in addition to all main effects.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>model_interaction <span class="ot">&lt;-</span> <span class="fu">lm</span>(MEDV <span class="sc">~</span> . <span class="sc">+</span> PTRATIO <span class="sc">*</span> LSTAT, <span class="at">data =</span> boston)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>To further evaluate and compare the baseline and interaction models, we assessed AIC values and overall model accuracy metrics.</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 4
+  r.squared adj.r.squared sigma   AIC
+      &lt;dbl&gt;         &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+1     0.741         0.735  4.74 3021.</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 4
+  r.squared adj.r.squared sigma   AIC
+      &lt;dbl&gt;         &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+1     0.743         0.735  4.74 3021.</code></pre>
+</div>
+</div>
+<p>Both the baseline model and the interaction model displayed very similar levels of accuracy, with nearly identical adjusted <span class="math inline">\(R^2\)</span>, residual standard error (<span class="math inline">\(\sigma\)</span>), and AIC values, which suggests that the relationship between <code>PTRATIO</code> and home value is not strongly moderated by <code>LSTAT</code> after conditioning on the other 12 predictors. Hence, we treated the interaction model as an exploratory extension rather than a definitive improvement.</p>
+<p>Next, we attempted ridge regression to evaluate whether regularizing the coefficients might improve predictive performance. However, the ridge model offered no meaningful improvement over OLS, so it was excluded from the final analysis.</p>
+<p>We then conducted influence diagnostics using Cook’s Distance to assess whether specific tracts had disproportionate influence on the model. A standard threshold of</p>
+<p><span class="math display">\[
+D_i \;&gt;\; \frac{4}{\,n - k - 1\,}
+\]</span></p>
+<p>identified several outliers, particularly high-value census tracts affected by the <code>MEDV = 50</code> censoring. These influential points were causing substantial distortion in multiple coefficients and inflating prediction error for the central region of the distribution.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="report_files/figure-html/cooks_distance.png" class="img-fluid figure-img" width="336"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>After identifying exceedingly influential observations, we constructed a refined model by removing only the tracts whose Cook’s Distance exceeded the threshold. This refinement excluded censored high-value tracts while retaining the vast majority of the dataset. The refined model showed substantial improvement in model accuracy, including lower residual standard error, higher adjusted <span class="math inline">\(R^2\)</span> (from 0.73 for 0.84), and improved linearity in residual plots.</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 12
+  r.squared adj.r.squared sigma statistic   p.value    df logLik   AIC   BIC
+      &lt;dbl&gt;         &lt;dbl&gt; &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+1     0.841         0.837  3.26      187. 2.96e-174    13 -1226. 2482. 2545.
+# ℹ 3 more variables: deviance &lt;dbl&gt;, df.residual &lt;int&gt;, nobs &lt;int&gt;</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="report_files/figure-html/residual_plots.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Because this refined model exhibited meaningfully betterdiagnostics than both the baseline and interaction models, we selected it as the basis for our final interpretation in the Results section. The refined model preserves the interpretability of the full linear specification but avoids distortion caused by extreme outliers.</p>
+</section>
+<section id="results" class="level1">
+<h1>Results</h1>
+<p>Using the refined OLS model obtained through Cook’s Distance–based removal, we now assess the statistical significance and predictive contribution of each variable. Table below reports the complete regression output, including coefficients, standard errors, test statistics, and p-values.</p>
+<div class="cell">
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>Full Coefficient Table for Refined Regression Model</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;">term</th>
+<th style="text-align: right;">estimate</th>
+<th style="text-align: right;">std.error</th>
+<th style="text-align: right;">statistic</th>
+<th style="text-align: right;">p.value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">(Intercept)</td>
+<td style="text-align: right;">20.080</td>
+<td style="text-align: right;">4.034</td>
+<td style="text-align: right;">4.978</td>
+<td style="text-align: right;">0.000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">CRIM</td>
+<td style="text-align: right;">-0.087</td>
+<td style="text-align: right;">0.028</td>
+<td style="text-align: right;">-3.099</td>
+<td style="text-align: right;">0.002</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">ZN</td>
+<td style="text-align: right;">0.043</td>
+<td style="text-align: right;">0.010</td>
+<td style="text-align: right;">4.435</td>
+<td style="text-align: right;">0.000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">INDUS</td>
+<td style="text-align: right;">-0.024</td>
+<td style="text-align: right;">0.044</td>
+<td style="text-align: right;">-0.547</td>
+<td style="text-align: right;">0.584</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">CHAS</td>
+<td style="text-align: right;">1.376</td>
+<td style="text-align: right;">0.654</td>
+<td style="text-align: right;">2.103</td>
+<td style="text-align: right;">0.036</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">NOX</td>
+<td style="text-align: right;">-10.259</td>
+<td style="text-align: right;">2.778</td>
+<td style="text-align: right;">-3.693</td>
+<td style="text-align: right;">0.000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">RM</td>
+<td style="text-align: right;">5.008</td>
+<td style="text-align: right;">0.367</td>
+<td style="text-align: right;">13.658</td>
+<td style="text-align: right;">0.000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">AGE</td>
+<td style="text-align: right;">-0.023</td>
+<td style="text-align: right;">0.010</td>
+<td style="text-align: right;">-2.371</td>
+<td style="text-align: right;">0.018</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">DIS</td>
+<td style="text-align: right;">-1.235</td>
+<td style="text-align: right;">0.146</td>
+<td style="text-align: right;">-8.476</td>
+<td style="text-align: right;">0.000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">RAD</td>
+<td style="text-align: right;">0.200</td>
+<td style="text-align: right;">0.047</td>
+<td style="text-align: right;">4.220</td>
+<td style="text-align: right;">0.000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">TAX</td>
+<td style="text-align: right;">-0.012</td>
+<td style="text-align: right;">0.003</td>
+<td style="text-align: right;">-4.621</td>
+<td style="text-align: right;">0.000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">PTRATIO</td>
+<td style="text-align: right;">-0.747</td>
+<td style="text-align: right;">0.094</td>
+<td style="text-align: right;">-7.979</td>
+<td style="text-align: right;">0.000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">B</td>
+<td style="text-align: right;">0.011</td>
+<td style="text-align: right;">0.002</td>
+<td style="text-align: right;">5.500</td>
+<td style="text-align: right;">0.000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">LSTAT</td>
+<td style="text-align: right;">-0.373</td>
+<td style="text-align: right;">0.043</td>
+<td style="text-align: right;">-8.762</td>
+<td style="text-align: right;">0.000</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>This provides a clear insight to answering our research question.</p>
+<p>First, several predictors emerge as especially powerful and statistically robust determinants of housing prices: socioeconomic status (<code>LSTAT</code>), housing structure (<code>RM</code>), school quality (<code>PTRATIO</code>), environmental quality (<code>NOX</code>), accessibility (<code>DIS</code>, <code>RAD</code>), property tax burden (<code>TAX</code>), and racial composition (<code>B</code>) all exhibit extremely strong significance (p &lt; 0.001). Their consistently large effect sizes and very low p-values show that these dimensions of neighborhood quality are central to predicting home values.</p>
+<p>Second, additional predictors remain important at conventional levels, including crime rate (<code>CRIM</code>), river adjacency (<code>CHAS</code>), and housing stock age (<code>AGE</code>), each of which independently explains meaningful variation in prices even after adjusting for the stronger predictors. Only <code>INDUS</code> shows no significant predictive value once other neighborhood characteristics are included.</p>
+<p>Furthermore, a few coefficients from the refined model provide especially intuitive interpretations that connect directly back to our research question:</p>
+<ul>
+<li><p>From the regression coefficient of <code>CHAS</code>, we expect that a house located in a tract bordering the Charles River will be about <strong>$1,400 more expensive</strong> than a comparable house not located on the river, holding all other variables constant. This supports our earlier descriptive finding that river-adjacent neighborhoods command a clear location premium.</p></li>
+<li><p>From the regression coefficient of <code>RM</code>, we expect that for <strong>each additional room</strong> a home has, the median home value increases by roughly <strong>$5,000</strong>, all else equal. This highlights the importance of structural housing quality and size in explaining price differences across tracts.</p></li>
+<li><p>From the regression coefficient of <code>DIS</code>, for every <strong>one-unit increase</strong> in the weighted distance to the five main Boston employment centers, we expect the median home value to <strong>decrease by about $1,200</strong>, holding other predictors fixed. This suggests that, after accounting for other neighborhood features, longer effective commute distances still modestly depress housing values.</p></li>
+</ul>
+</section>
+<section id="discussions-conclusions" class="level1">
+<h1>Discussions + Conclusions</h1>
+<section id="predicted-housing-value-under-median-neighborhood-conditions" class="level2">
+<h2 class="anchored" data-anchor-id="predicted-housing-value-under-median-neighborhood-conditions">Predicted Housing Value Under Median Neighborhood Conditions</h2>
+<p>To illustrate the implied housing price for a tract with “average” characteristics, we predicted <code>MEDV</code> using the vector of median values for all predictors in the dataset. This provides a model-based estimate of what the typical Boston census tract would have been valued at.</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>       fit      lwr     upr
+1 21.84184 15.42128 28.2624</code></pre>
+</div>
+</div>
+<p>Our refined model projects a median-condition Boston tract home value of approximately $21,841. To contextualize this estimate, Demographia’s data about housing prices across the nation in 1971 reports that the national median is $18,100, and most major cities’ median fall within our estimated confidence interval. The same data suggests that the median housing price in Boston in 1971 is $23,400. Thus, our model plausibly estimates the housing prices around similarly urbanized/conditioned cities around similar time horizon.</p>
+</section>
+<section id="synthesizing-key-drivers-of-housing-prices" class="level2">
+<h2 class="anchored" data-anchor-id="synthesizing-key-drivers-of-housing-prices">Synthesizing Key Drivers of Housing Prices</h2>
+<p>Patterns observed in our exploratory analysis proved essential for interpreting the refined model. The strong decline of <code>MEDV</code> with rising <code>LSTAT</code>, the positive association with <code>RM</code>, and the negative slope with <code>PTRATIO</code> foreshadowed their emergence as the most influential predictors. Environmental and geographic factors—including higher prices in river-adjacent tracts and lower prices in high-NOX areas—also reappeared in the refined regression, reinforcing the role of neighborhood amenities and environmental quality in shaping housing demand.</p>
+<p>Although the <code>PTRATIO × LSTAT</code> interaction did not improve predictive accuracy, exploring it revealed a meaningful conceptual point: in socioeconomically disadvantaged neighborhoods, improvements in school quality or environmental conditions have less marginal impact on price because baseline conditions are already strongly suppressing values.</p>
+</section>
+<section id="reflection-on-modeling-choices" class="level2">
+<h2 class="anchored" data-anchor-id="reflection-on-modeling-choices">Reflection on Modeling Choices</h2>
+<p>Both the baseline and interaction models achieved similar adjusted (R^2) and AIC values, and ridge regression offered no gains in accuracy—consistent with our finding that multicollinearity was minimal. The major improvement came from addressing influential observations. Cook’s Distance identified several censored high-value tracts that distorted coefficient estimates and inflated residual variance. Removing these outliers produced a refined model with higher accuracy, more stable effects, and diagnostic patterns much closer to linear-model assumptions.</p>
+</section>
+<section id="broader-housing-market-implications" class="level2">
+<h2 class="anchored" data-anchor-id="broader-housing-market-implications">Broader Housing-Market Implications</h2>
+<p>The refined regression aligns with broader urban economics: socioeconomic status, structural housing quality, school resources, environmental conditions, and accessibility are all central to pricing. The strong effects of <code>PTRATIO</code> and <code>NOX</code> underscore how educational and environmental public goods were capitalized into housing values even in the 1970s.</p>
+<p>Our predicted value for a tract with median characteristics (~$21,841) closely matches typical national and Boston-area home prices from the early 1970s, indicating that the model yields historically realistic price levels and captures core neighborhood-level drivers of housing values.</p>
+</section>
+<section id="limitations-and-future-directions" class="level2">
+<h2 class="anchored" data-anchor-id="limitations-and-future-directions">Limitations and Future Directions</h2>
+<p>Key limitations include censoring of <code>MEDV</code> at $50,000, the cross-sectional nature of the data, and the absence of modern predictors such as crime rates, school performance, or transit access. Future work could apply censored regression models, incorporate spatial dependence, or compare these historical determinants with modern data to assess how Boston’s housing dynamics have evolved.</p>
+</section>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
+        }
+        return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
