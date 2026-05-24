@@ -9,14 +9,14 @@
 Analysis of the classic Boston Housing dataset (Harrison & Rubinfeld, 1978) to identify
 the strongest predictors of median home values across 506 Boston census tracts.
 
---
+---
 
 ## Research Question
 
 > How effectively can we predict median owner-occupied home values using 13 neighbourhood-level
 > predictors, and which are most influential?
 
---
+---
 
 ## Notebook Contents
 
@@ -29,7 +29,7 @@ the strongest predictors of median home values across 506 Boston census tracts.
 | 4. Results | Coefficient table, CI plot, key interpretations |
 | 5. Discussion | Actual vs. predicted, feature importance, limitations |
 
---
+---
 
 ## Key Findings
 
@@ -38,7 +38,7 @@ the strongest predictors of median home values across 506 Boston census tracts.
 - Removing influential observations (Cook's D threshold) raised Adj R² from ~0.73 to ~0.84.
 - River-adjacent tracts (CHAS=1) carry a ~$1,400 premium; each extra room adds ~$5,000.
 
---
+---
 
 ## Requirements
 
@@ -56,7 +56,7 @@ Install with:
 pip install numpy pandas matplotlib seaborn scipy statsmodels
 ```
 
---
+---
 
 ## Data
 
@@ -65,7 +65,7 @@ The dataset is the original Boston Housing data from the U.S. Census Bureau, as 
 > Harrison, D. & Rubinfeld, D.L. (1978). Hedonic housing prices and the demand for clean air.
 > *Journal of Environmental Economics and Management*, 5(1), 81–102.
 
---
+---
 
 ## Acknowledgements
 
